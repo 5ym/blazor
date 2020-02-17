@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+    blazor:
+        image: mcr.microsoft.com/dotnet/core/sdk:3.1-alpine
+        volumes:
+            - ".:/app"
+        working_dir: /app
+        command: "dotnet run"
+        expose:
+            - "80"
+        networks:
+            - docker_default
+        labels:
+            - "traefik.http.routers.blazor.tls.certresolver=mydnschallenge"
+
+networks:
+    docker_default:
+        external: true
+        name: docker_default

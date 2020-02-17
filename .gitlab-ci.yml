@@ -1,0 +1,17 @@
+docker-build:
+  image: docker
+  stage: build
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - docker:dind
+  before_script:
+    - apk add --no-cache python3
+    - pip3 install awscli --upgrade --user
+    - export PATH="$PATH:/root/.local/bin"
+    - eval $(aws ecr get-login --no-include-email)
+  script:
+    - docker build --pull -t $AWS_REGISTRY_URL:$CI_PIPELINE_ID .
+    - docker push $AWS_REGISTRY_URL
+  only:
+    - master
